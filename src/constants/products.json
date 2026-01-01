@@ -1,0 +1,52 @@
+[
+  {
+    "id": "p1",
+    "name": "Maggie 2-Minute Noodles",
+    "category": "Instant Noodles",
+    "price": "₹30",
+    "rating": 4.3,
+    "image": "maggie_noodles.png",
+    "description": "Classic masala-flavoured instant noodles. Quick, tasty and comforting.",
+    "tags": ["instant", "ready-to-eat", "spicy"]
+  },
+  {
+    "id": "p2",
+    "name": "Masala Maggi (Family Pack)",
+    "category": "Instant Noodles",
+    "price": "₹120",
+    "rating": 4.5,
+    "image": "maggie_family.png",
+    "description": "Family-size pack of masala noodles — perfect for sharing.",
+    "tags": ["family", "value"]
+  },
+  {
+    "id": "p3",
+    "name": "Veg Hakka Noodles",
+    "category": "Prepared Foods",
+    "price": "₹99",
+    "rating": 4.4,
+    "image": "veg_hakka_noodles.png",
+    "description": "Stir-fried Hakka-style noodles with mixed vegetables and light soy seasoning.",
+    "tags": ["veg", "noodles", "wok"]
+  },
+  {
+    "id": "p4",
+    "name": "Chicken Schezwan Noodles",
+    "category": "Prepared Foods",
+    "price": "₹169",
+    "rating": 4.6,
+    "image": "chicken_schezwan.png",
+    "description": "Spicy Schezwan-flavoured noodles tossed with chicken strips.",
+    "tags": ["chicken", "spicy", "schezwan"]
+  },
+  {
+    "id": "p5",
+    "name": "Cup Noodles (Masala)",
+    "category": "Instant Noodles",
+    "price": "₹40",
+    "rating": 4.0,
+    "image": "cup_noodles_masala.png",
+    "description": "Single-serve cup noodles — convenient for office or travel.",
+    "tags": ["cup", "single-serve"]
+  }
+]
