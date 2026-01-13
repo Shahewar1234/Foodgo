@@ -46,10 +46,12 @@ export default function PaymentScreen({ route, navigation }: Props) {
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
   const [cardType, setCardType] = useState<CardType>('credit'); // NEW: choose Credit/Debit
+  const [cardErrors, setCardErrors] = useState<{ [k: string]: string }>({});
 
   // Address & instructions (visible for all methods)
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [deliveryInstructions, setDeliveryInstructions] = useState('');
+  const [payErrors, setPayErrors] = useState<{ [k: string]: string }>({});
 
   const storageKey = user ? `cards_${user.uid}` : `cards_guest`;
 
@@ -139,10 +141,12 @@ export default function PaymentScreen({ route, navigation }: Props) {
   // Add/Edit/Delete cards
   const handleAddCard = () => {
     const cleanNumber = cardNumber.replace(/\s+/g, '');
-    if (cleanNumber.length < 12 || !cardName || expiry.length < 3 || cvv.length < 3) {
-      Alert.alert('Invalid', 'Please enter valid card details');
-      return;
-    }
+    const errs: { [k: string]: string } = {};
+    if (cleanNumber.length < 12) errs.cardNumber = 'Required';
+    if (!cardName) errs.cardName = 'Required';
+    if (expiry.length < 3) errs.expiry = 'Required';
+    if (cvv.length < 3) errs.cvv = 'Required';
+    if (Object.keys(errs).length > 0) { setCardErrors(errs); return; }
     const cardObj: SavedCard = {
       id: editingId || Date.now().toString(),
       brand: 'VISA',
@@ -200,14 +204,13 @@ export default function PaymentScreen({ route, navigation }: Props) {
   };
 
   const onPayNow = () => {
+    const errs: { [k: string]: string } = {};
     if (selectedMethod === 'none') {
-      Alert.alert('Payment', 'Please select a payment method.');
-      return;
+      errs.method = 'Required';
+      Alert.alert('Please select payment mode');
     }
-    if (!deliveryAddress.trim()) {
-      Alert.alert('Address required', 'Please enter a delivery address.');
-      return;
-    }
+    if (!deliveryAddress.trim()) errs.deliveryAddress = 'Required';
+    if (Object.keys(errs).length > 0) { setPayErrors(errs); return; }
 
     if (selectedMethod === 'cod') {
       Alert.alert(
@@ -252,6 +255,9 @@ export default function PaymentScreen({ route, navigation }: Props) {
           <Text style={[styles.rowValue, styles.total]}>{fmt(baseTotal)}</Text>
         </View>
 
+        {payErrors.method ? <Text style={styles.errorText}>Please select payment mode</Text> : null}
+        
+
         {/* Payment methods */}
         <Text style={styles.sub}>Payment methods</Text>
 
@@ -268,14 +274,14 @@ export default function PaymentScreen({ route, navigation }: Props) {
 
           <TouchableOpacity
             style={[styles.methodBtn, selectedMethod === 'debit' && styles.methodBtnActive]}
-            onPress={() => setSelectedMethod('debit')}
+            onPress={() => { setSelectedMethod('debit'); }}
           >
             <Text style={[styles.methodText, selectedMethod === 'debit' && styles.methodTextActive]}>Debit</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.methodBtn, selectedMethod === 'cod' && styles.methodBtnActive]}
-            onPress={() => setSelectedMethod('cod')}
+            onPress={() => { setSelectedMethod('cod'); }}
           >
             <Text style={[styles.methodText, selectedMethod === 'cod' && styles.methodTextActive]}>Cash</Text>
           </TouchableOpacity>
@@ -295,9 +301,10 @@ export default function PaymentScreen({ route, navigation }: Props) {
             style={[styles.inputField, { minHeight: 50 }]}
             placeholder="Flat / Street / Area, City, Pincode"
             value={deliveryAddress}
-            onChangeText={setDeliveryAddress}
+            onChangeText={(t) => { setDeliveryAddress(t); setPayErrors(prev => ({ ...prev, deliveryAddress: '' })); }}
             multiline
           />
+          {payErrors.deliveryAddress ? <Text style={styles.errorText}>{payErrors.deliveryAddress}</Text> : null}
 
           <Text style={[styles.inputLabel, { marginTop: 10 }]}>Delivery instructions (optional)</Text>
           <TextInput
@@ -416,16 +423,18 @@ export default function PaymentScreen({ route, navigation }: Props) {
               placeholder="1234 5678 9012 3456"
               keyboardType="numeric"
               value={cardNumber}
-              onChangeText={setCardNumber}
+              onChangeText={(t) => { setCardNumber(t); setCardErrors(prev => ({ ...prev, cardNumber: '' })); }}
             />
+            {cardErrors.cardNumber ? <Text style={styles.errorText}>{cardErrors.cardNumber}</Text> : null}
 
             <Text style={styles.inputLabel}>Name on card</Text>
             <TextInput
               style={styles.inputField}
               placeholder="Full name"
               value={cardName}
-              onChangeText={setCardName}
+              onChangeText={(t) => { setCardName(t); setCardErrors(prev => ({ ...prev, cardName: '' })); }}
             />
+            {cardErrors.cardName ? <Text style={styles.errorText}>{cardErrors.cardName}</Text> : null}
 
             <View style={styles.rowInline}>
               <View style={styles.flex2}>
@@ -434,7 +443,7 @@ export default function PaymentScreen({ route, navigation }: Props) {
                   style={styles.inputField}
                   placeholder="MM/YY"
                   value={expiry}
-                  onChangeText={setExpiry}
+                  onChangeText={(t) => { setExpiry(t); setCardErrors(prev => ({ ...prev, expiry: '' })); }}
                 />
               </View>
               <View style={styles.flex1ml}>
@@ -443,11 +452,15 @@ export default function PaymentScreen({ route, navigation }: Props) {
                   style={styles.inputField}
                   placeholder="123"
                   value={cvv}
-                  onChangeText={setCvv}
+                  onChangeText={(t) => { setCvv(t); setCardErrors(prev => ({ ...prev, cvv: '' })); }}
                   secureTextEntry
                   keyboardType="numeric"
                 />
               </View>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              {cardErrors.expiry ? <Text style={[styles.errorText, { alignSelf: 'flex-start' }]}>{cardErrors.expiry}</Text> : <View />}
+              {cardErrors.cvv ? <Text style={[styles.errorText, { alignSelf: 'flex-start' }]}>{cardErrors.cvv}</Text> : <View />}
             </View>
 
             <TouchableOpacity style={styles.saveCardBtn} onPress={handleAddCard}>
@@ -828,4 +841,5 @@ const styles = StyleSheet.create({
   codTitle: { fontSize: 16, fontWeight: '800', color: colors.text },
   codNote: { fontSize: 13, color: colors.muted, marginTop: 6 },
   codEta: { fontSize: 12, color: colors.muted, marginTop: 6 },
+  errorText: { color: '#d32f2f', marginTop: 6, fontSize: 12, alignSelf: 'flex-end', marginRight: 8 },
 });

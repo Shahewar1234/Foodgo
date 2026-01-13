@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -79,10 +79,10 @@ export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
   const { user } = useAuth();
 
-  const [selectedCategory, setSelectedCategory] = React.useState<Category>('All');
-  const [favorites, setFavorites] = React.useState<string[]>([]);
-  const [search, setSearch] = React.useState('');
-  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category>('All');
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [search, setSearch] = useState('');
+  const [menuVisible, setMenuVisible] = useState(false);
 
   // Get currency symbol from user, default to USD
   const currencySymbol = user?.currency?.symbol || '$';

@@ -32,14 +32,15 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { login, signInWithGoogle } = useAuth();
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
    const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill all fields');
-      return;
-    }
+    const newErrors: { [key: string]: string } = {};
+    if (!email) newErrors.email = 'Required';
+    if (!password) newErrors.password = 'Required';
+    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
 
     setLoading(true);
     try {
@@ -65,8 +66,14 @@ export default function LoginScreen() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      await GoogleSignin.hasPlayServices();
+      console.log('Checking Play Services...');
+      const hasPlayServices = await GoogleSignin.hasPlayServices();
+      console.log('Has Play Services:', hasPlayServices);
+      
+      console.log('Attempting sign in...');
       const userInfo = await GoogleSignin.signIn();
+      console.log('Sign in successful:', userInfo);
+      
       if (userInfo.idToken && signInWithGoogle) {
         await signInWithGoogle(userInfo.idToken);
         Alert.alert('Success', 'Google Sign-In successful!', [
@@ -85,8 +92,11 @@ export default function LoginScreen() {
         setLoading(false);
       }
     } catch (error: any) {
+      console.log('Google Sign-In Error:', error);
+      console.log('Error code:', error.code);
+      console.log('Error message:', error.message);
       if (error.code !== statusCodes.SIGN_IN_CANCELLED) {
-        Alert.alert('Google Sign-In Failed', error.message);
+        Alert.alert('Google Sign-In Failed', `Code: ${error.code}\n${error.message}`);
       }
       setLoading(false);
     }
@@ -113,11 +123,12 @@ export default function LoginScreen() {
                 placeholderTextColor={colors.muted}
                 keyboardType="email-address"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(t) => { setEmail(t); setErrors(prev => ({ ...prev, email: '' })); }}
                 style={styles.input}
                 editable={!loading}
               />
             </View>
+            {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
           </View>
 
           {/* Password Input */}
@@ -130,7 +141,7 @@ export default function LoginScreen() {
                 placeholderTextColor={colors.muted}
                 secureTextEntry={!showPassword}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(t) => { setPassword(t); setErrors(prev => ({ ...prev, password: '' })); }}
                 style={styles.input}
                 editable={!loading}
               />
@@ -138,6 +149,7 @@ export default function LoginScreen() {
                 <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={20} color={colors.muted} />
               </TouchableOpacity>
             </View>
+            {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
           </View>
 
           {/* Forgot Password Link */}
@@ -245,4 +257,5 @@ const styles = StyleSheet.create({
   signupRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   signupText: { fontSize: 14, color: colors.muted, fontWeight: '600' },
   signupLink: { fontSize: 14, color: colors.primary, fontWeight: '800' },
+  errorText: { color: '#d32f2f', marginTop: 6, fontSize: 12, alignSelf: 'flex-end', marginRight: 8 },
 });

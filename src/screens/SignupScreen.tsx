@@ -9,6 +9,10 @@ import {
   Alert,
   ActivityIndicator,
   StatusBar,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import LinearGradient from 'react-native-linear-gradient';
@@ -16,7 +20,7 @@ import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useAuth } from '../stores/AuthContext';
 import colors from '../theme/colors';
 
-const countries = ['United States', 'Canada', 'United Kingdom', 'Australia', 'India', 'Germany', 'France', 'Japan', 'Mexico', 'Brazil'];
+const countries = ['United States', 'Canada', 'United Kingdom', 'Australia', 'India', 'Germany', 'France', 'Japan', 'Mexico', 'Brazil', 'Italy', 'Spain', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Switzerland', 'South Korea', 'China'];
 
 export default function SignupScreen({ navigation }: any) {
   const [name, setName] = useState('');
@@ -27,21 +31,20 @@ export default function SignupScreen({ navigation }: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { signup } = useAuth();
 
     const handleSignup = async () => {
-    if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill all fields');
-      return;
-    }    
+    const newErrors: { [key: string]: string } = {};
+    if (!name) newErrors.name = 'Required';
+    if (!email) newErrors.email = 'Required';
+    if (!password) newErrors.password = 'Required';
+    if (!confirmPassword) newErrors.confirmPassword = 'Required';
+    if (password && password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    if (password && confirmPassword && password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
 
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
-      return;
-    }
-
-    if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -69,14 +72,25 @@ export default function SignupScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content"  backgroundColor="#ffffff"  translucent={false} />
-      <LinearGradient colors={[colors.splashStart, colors.splashEnd]} style={styles.background}>
-        <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-        <View style={styles.topBar}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <LinearGradient colors={[colors.splashStart, colors.splashEnd]} style={styles.background}>
+            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+            <View style={styles.topBar}>
           <Text style={styles.brand}>Foodgo</Text>
           <Text style={styles.tagline}>Join us for fresh, delicious meals delivered to your doorstep!</Text>
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollCentered} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={[styles.scrollCentered, { paddingBottom: 120 }]}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
           <View style={styles.card}>
             {/* Name Input */}
             <View style={styles.inputGroup}>
@@ -87,12 +101,13 @@ export default function SignupScreen({ navigation }: any) {
                   placeholder="Enter your full name"
                   placeholderTextColor={colors.muted}
                   value={name}
-                  onChangeText={setName}
+                  onChangeText={(text) => { setName(text); setErrors(prev => ({ ...prev, name: '' })); }}
                   style={styles.input}
                   editable={!loading}
-                />
+                  />
+                </View>
+                {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
               </View>
-            </View>
 
             {/* Country Picker */}
             <View style={styles.inputGroup}>
@@ -121,11 +136,12 @@ export default function SignupScreen({ navigation }: any) {
                 placeholderTextColor={colors.muted}
                 keyboardType="email-address"
                 value={email} 
-                onChangeText={setEmail}
+                onChangeText={(text) => { setEmail(text); setErrors(prev => ({ ...prev, email: '' })); }}
                 style={styles.input}
                 editable={!loading}
               />
             </View>
+            {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
           </View>
 
           {/* Password Input */}
@@ -138,7 +154,7 @@ export default function SignupScreen({ navigation }: any) {
                 placeholderTextColor={colors.muted}
                 secureTextEntry={!showPassword}
                 value={password} 
-                onChangeText={ setPassword}  
+                onChangeText={(text) => { setPassword(text); setErrors(prev => ({ ...prev, password: '' })); }}  
                 style={styles.input}
                 editable={!loading}
               />
@@ -146,6 +162,7 @@ export default function SignupScreen({ navigation }: any) {
                 <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={20} color={colors.muted} />
               </TouchableOpacity>
             </View>
+            {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
           </View>
 
           {/* Confirm Password Input */}
@@ -158,7 +175,7 @@ export default function SignupScreen({ navigation }: any) {
                 placeholderTextColor={colors.muted}
                 secureTextEntry={!showConfirmPassword}
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={(text) => { setConfirmPassword(text); setErrors(prev => ({ ...prev, confirmPassword: '' })); }}
                 style={styles.input}
                 editable={!loading}
               />
@@ -166,6 +183,7 @@ export default function SignupScreen({ navigation }: any) {
                 <Ionicons name={showConfirmPassword ? 'eye' : 'eye-off'} size={20} color={colors.muted} />
               </TouchableOpacity>
             </View>
+            {errors.confirmPassword ? <Text style={styles.errorText}>{errors.confirmPassword}</Text> : null}
           </View>
 
           {/* Signup Button */}
@@ -191,7 +209,9 @@ export default function SignupScreen({ navigation }: any) {
           </View>
           </View>
         </ScrollView>
-      </LinearGradient>
+          </LinearGradient>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -220,6 +240,7 @@ const styles = StyleSheet.create({
   },
   icon: { marginRight: 10 },
   input: { flex: 1, height: 50, fontSize: 15, color: colors.text },
+  errorText: { color: '#d32f2f', marginTop: 6, fontSize: 12, alignSelf: 'flex-end', marginRight: 8 },
   signupBtn: {
     height: 54,
     borderRadius: 14,

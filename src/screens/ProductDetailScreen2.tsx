@@ -46,7 +46,7 @@ export default function ProductDetailScreen() {
   const { user } = useAuth();
 
   const [spicy, setSpicy] = useState<number>(0.5); // 0..1
-  const [portion, setPortion] = useState<number>(2); // count
+  const [portion, setPortion] = useState<number>(1); // count
   const [pickedToppings, setPickedToppings] = useState<string[]>([]);
   const [pickedSides, setPickedSides] = useState<string[]>([]);
 

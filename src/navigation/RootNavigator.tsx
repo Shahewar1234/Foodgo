@@ -67,8 +67,16 @@ function RootStack() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
       <Stack.Screen name="ProductDetail2" component={ProductDetailScreen2} />
-      <Stack.Screen name="Payment" component={require('../screens/PaymentScreen').default} />
-      <Stack.Screen name="Success" component={require('../screens/SuccessScreen').default} />
+      <Stack.Screen
+        name="Payment"
+        component={require('../screens/PaymentScreen').default}
+        options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+      />
+      <Stack.Screen
+        name="Success"
+        component={require('../screens/SuccessScreen').default}
+        options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+      />
       <Stack.Screen name="Profile" component={require('../screens/ProfileScreen').default} />
       <Stack.Screen name="Chat" component={require('../screens/ChatScreen').default} />
       <Stack.Screen name="Favorites" component={require('../screens/FavoritesScreen').default} />
