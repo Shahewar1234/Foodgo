@@ -1,97 +1,108 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:E8453C,100:F5A623&height=180&section=header&text=Foodgo&fontSize=54&fontColor=ffffff&fontAlignY=38&desc=Cross-Platform%20Food%20Ordering%20App&descSize=18&descAlignY=60" width="100%" alt="Foodgo banner"/>
+</p>
 
-# Getting Started
+<p align="center">
+  <img src="https://img.shields.io/badge/React_Native_0.83-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Firebase_Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=black"/>
+  <img src="https://img.shields.io/badge/React_Navigation-6B52AE?style=for-the-badge&logo=react&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Android_&_iOS-3DDC84?style=for-the-badge&logo=android&logoColor=white"/>
+</p>
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+<p align="center">
+  A food ordering app for <b>Android and iOS</b>, built with <b>React Native and TypeScript</b>.<br/>
+  Browse the menu, customize your meal, save favorites, pay and get help from in-app support.
+</p>
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## ✨ Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+| | Feature | What it does |
+| --- | --- | --- |
+| 🚀 | **Splash & Onboarding** | Branded splash and welcome screens for first-time users |
+| 🔐 | **Authentication** | Email/password sign-up and login plus Google Sign-In via Firebase Authentication, with a persistent session |
+| 🍔 | **Menu Browsing** | Explore food items with images, ratings, prices and categories |
+| 🌶️ | **Product Customization** | Choose spice level with a slider and pick portion size on the detail screen |
+| ❤️ | **Favorites** | Save dishes you love for quick access |
+| 💳 | **Checkout & Payment** | Order summary with card, UPI and cash payment options, followed by an order success screen |
+| 💬 | **Support Chat** | In-app support chat with quick replies for order status, refunds and delivery issues |
+| 👤 | **Profile** | View and manage user details |
 
-```sh
-# Using npm
-npm start
+---
 
-# OR using Yarn
-yarn start
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+| --- | --- |
+| **Framework** | React Native 0.83, TypeScript |
+| **Navigation** | React Navigation (Native Stack & Stack) |
+| **State Management** | React Context API (`AuthContext`) |
+| **Storage** | AsyncStorage |
+| **Authentication** | Firebase Authentication, Google Sign-In |
+| **UI** | React Native Linear Gradient, Vector Icons (Ionicons, FontAwesome), Slider, Picker, Gesture Handler |
+| **Testing & Quality** | Jest, ESLint, Prettier |
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+├── screens/       # Splash, Welcome, Login, Signup, Home, ProductDetail, Favorites, Payment, Success, Chat, Profile
+├── navigation/    # RootNavigator with auth-aware routing
+├── stores/        # AuthContext for session and user state
+├── services/      # Firebase setup
+├── constants/     # Product data and image assets
+└── theme/         # App color palette
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## 📸 Screenshots
 
-### Android
+<!-- Add your screenshots to a /screenshots folder, then remove this comment line and the one at the end.
+<p align="center">
+  <img src="screenshots/home.png" width="22%"/>
+  <img src="screenshots/product_detail.png" width="22%"/>
+  <img src="screenshots/payment.png" width="22%"/>
+  <img src="screenshots/chat.png" width="22%"/>
+</p>
+-->
 
-```sh
-# Using npm
+*Screenshots coming soon.*
+
+---
+
+## 🚀 Getting Started
+
+**Requirements:** Node.js 20+, React Native development environment ([setup guide](https://reactnative.dev/docs/set-up-your-environment)), Android Studio and/or Xcode.
+
+```bash
+git clone https://github.com/Shahewar1234/Foodgo.git
+cd Foodgo
+npm install
+```
+
+1. Create a Firebase project, enable **Email/Password** and **Google** sign-in, and add your own `google-services.json` to `android/app/`.
+2. Start Metro: `npm start`
+3. Run the app:
+
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# or, for iOS
+cd ios && bundle install && bundle exec pod install && cd ..
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+Run tests with `npm test`.
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+---
 
-## Step 3: Modify your app
+## 👩‍💻 Author
 
-Now that you have successfully run the app, let's make changes!
+**Shahewar Khan** — React Native Developer
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Shahewar1234)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/shahewar-khan-8a8365215)
